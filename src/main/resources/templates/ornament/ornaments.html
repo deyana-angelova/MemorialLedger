@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="stylesheet" th:href="@{/style.css}">
+</head>
+<body>
+<div class="app">
+
+    <aside th:replace="~{fragments/layout :: sidebar('ornaments')}"></aside>
+
+    <main class="content">
+        <header class="topbar">
+            <h1>Ornaments</h1>
+            <a class="btn" th:href="@{/ornaments/new}">+ Add ornament</a>
+        </header>
+
+        <div class="card">
+            <table>
+                <thead>
+                <tr>
+                    <th>Photo</th>
+                    <th>Catalogue #</th>
+                    <th>Name</th>
+                    <th>Price</th>
+                    <th></th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="o : ${ornaments}">
+                    <td>
+                        <img th:if="${o.ornamentImageFileName != null}"
+                             th:src="@{'/uploadsOrnaments/' + ${o.ornamentImageFileName}}"
+                             class="thumb" alt="Ornament photo">
+                    </td>
+                    <td th:text="${o.catalogueNum}"></td>
+                    <td th:text="${o.name}"></td>
+                    <td th:text="${o.price}"></td>
+                    <td>
+                        <a class="btn btn-light" th:href="@{/ornaments/{id}/edit(id=${o.id})}">Edit</a>
+                        <form th:action="@{/ornaments/{id}/delete(id=${o.id})}" method="post"
+                              style="display:inline"
+                              onsubmit="return confirm('Delete this ornament?');">
+                            <button class="btn" type="submit">Delete</button>
+                        </form>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </main>
+
+</div>
+</body>
+</html>

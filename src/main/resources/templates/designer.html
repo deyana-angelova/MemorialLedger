@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Designer</title>
+    <link rel="stylesheet" th:href="@{/style.css}">
+    <style>
+        .workspace { display: flex; gap: 16px; align-items: flex-start; }
+        .palette { width: 150px; flex-shrink: 0; }
+        .palette .p-item { margin-bottom: 8px; text-align: center; cursor: pointer; }
+        .palette img { width: 100px; height: 100px; object-fit: contain;
+                       background: #fafafa; border: 1px solid #eee; border-radius: 6px; }
+        .stage-wrap { flex: 1; }
+        .toolbar { margin-bottom: 10px; display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
+        .toolbar small { color: #777; }
+        .stage {
+            position: relative;
+            width: 100%;
+            height: 640px;
+            background: #fff;
+            border: 2px dashed #bbb;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        .stage.over { border-color: #222; background: #f3f3f3; }
+        .stage.dark { background: #333; }
+        .hint { position: absolute; inset: 0; display: flex; align-items: center;
+                justify-content: center; color: #999; pointer-events: none; text-align: center; }
+        .layer { position: absolute; cursor: move; user-select: none; touch-action: none; }
+        .layer img { width: 100%; height: auto; display: block; pointer-events: none; }
+        .layer.selected { outline: 2px solid #2b7cff; }
+        .handle { display: none; position: absolute; right: -7px; bottom: -7px; width: 14px; height: 14px;
+                  background: #2b7cff; border: 2px solid white; border-radius: 50%; cursor: nwse-resize; }
+        .layer.selected .handle { display: block; }
+    </style>
+</head>
+<body>
+<div class="app">
+    <aside th:replace="~{fragments/layout :: sidebar('designer')}"></aside>
+    <main class="content">
+        <header class="topbar">
+            <h1>Designer</h1>
+        </header>
+    </main>
+</div>
+<div class="app">
+
+    <aside th:replace="~{fragments/layout :: sidebar('designer')}"></aside>
+
+    <main class="content">
+        <header class="topbar">
+            <h1>Designer</h1>
+        </header>
+
+        <div class="workspace">
+
+            <div class="card palette">
+                <p style="margin-top:0"><strong>Library</strong></p>
+                <div th:each="f : ${files}" class="p-item" th:attr="data-src=@{'/svg/' + ${f}}">
+                    <img th:src="@{'/svg/' + ${f}}" draggable="false" alt="SVG">
+                </div>
+                <small th:if="${#lists.isEmpty(files)}">No files yet.</small>
+            </div>
+
+            <div class="stage-wrap">
+                <div class="toolbar">
+                    <button class="btn btn-light" id="front" type="button">Bring to front</button>
+                    <button class="btn btn-light" id="back" type="button">Send to back</button>
+                    <button class="btn btn-light" id="del" type="button">Delete layer</button>
+                    <button class="btn btn-light" id="bg" type="button">Background</button>
+                    <button class="btn btn-light" id="clear" type="button">Clear all</button>
+                    <small>Drop .svg files from a folder onto the stage. Drag to move, corner dot or wheel to resize.</small>
+                </div>
+
+                <div id="stage" class="stage">
+                    <div id="hint" class="hint">Drop an SVG here (for example the tombstone outline),<br>then drop another on top (for example a cross)</div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+</div>
+<script>
+    const stage = document.getElementById('stage');
+    const hint = document.getElementById('hint');
+    let selected = null;
+
+   //prevent the browser from doing the default actions of drag abnd drop
+   //stops it from opening files outside the stage
+   window.addEventListener("dragover", function(e){
+        e.preventDefault();
+   });
+
+   window.addEventListener("drop", function(e){
+        e.preventDefault();
+   });
+
+</script>
+</body>
+</html>

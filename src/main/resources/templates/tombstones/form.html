@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Add Tombstone</title>
+    <link rel="stylesheet" th:href="@{/style.css}">
+</head>
+<body>
+<div class="app">
+
+    <aside th:replace="~{fragments/layout :: sidebar('tombstones')}"></aside>
+
+    <main class="content">
+        <header class="topbar">
+            <h1 th:text="${tombstone.id != null} ? 'Edit Tombstone' : 'Add Tombstone'"></h1>
+        </header>
+
+        <div class="card" style="padding: 20px;">
+            <form th:action="${tombstone.id != null} ? @{/tombstones/{id}(id=${tombstone.id})} : @{/tombstones}"
+                  th:object="${tombstone}" method="post" enctype="multipart/form-data">
+                <p>
+                    <label>Catalogue #</label><br>
+                    <input type="number" th:field="*{catalogueNum}">
+                </p>
+                <p>
+                    <label>Name</label><br>
+                    <input type="text" th:field="*{name}">
+                </p>
+                <p th:each="s : ${sizes}">
+                    <label th:text="${s}"></label><br>
+                    <input type="number" step="0.01"
+                           th:name="|prices[${s}]|"
+                           th:value="${tombstone.prices.get(s)}">
+                </p>
+                <p>
+                    <label>Photo (JPEG)</label><br>
+                    <img th:if="${tombstone.imageFileName != null}"
+                         th:src="@{'/uploads/' + ${tombstone.imageFileName}}" width="100"><br>
+                    <input type="file" name="image" accept="image/jpeg">
+                    <small th:if="${tombstone.id != null}">Leave empty to keep the current photo.</small>
+                </p>
+                <p>
+                    <label>SVG file</label><br>
+                    <img th:if="${tombstone.svgFileName != null}"
+                         th:src="@{'/svg/' + ${tombstone.svgFileName}}"
+                         class="thumb" style="width:100px; height:100px;" alt="SVG preview"><br>
+                    <input type="file" name="svg" accept=".svg">
+                </p>
+                <button class="btn" type="submit">Save</button>
+                <a class="btn btn-light" th:href="@{/tombstones}">Cancel</a>
+            </form>
+        </div>
+    </main>
+
+</div>
+</body>
+</html>

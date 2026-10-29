@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Tombstones</title>
+    <link rel="stylesheet" th:href="@{/style.css}">
+</head>
+<body>
+<div class="app">
+
+    <aside th:replace="~{fragments/layout :: sidebar('tombstones')}"></aside>
+
+    <main class="content">
+        <header class="topbar">
+            <h1>Tombstones</h1>
+            <a class="btn" th:href="@{/tombstones/new}">+ Add tombstone</a>
+        </header>
+
+        <div class="card">
+            <table>
+                <thead>
+                <tr>
+                    <th>Photo</th>
+                    <th>Catalogue #</th>
+                    <th>Name</th>
+                    <th>Sizes and prices</th>
+                    <th></th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="t : ${tombstones}">
+                    <td>
+                        <img th:if="${t.imageFileName != null}"
+                             th:src="@{'/uploads/' + ${t.imageFileName}}"
+                             alt="Tombstone photo" width="80">
+                    </td>
+                    <td th:text="${t.catalogueNum}"></td>
+                    <td th:text="${t.name}"></td>
+                    <td>
+                        <div th:each="e : ${t.prices}" th:text="${e.key} + ': ' + ${e.value}"></div>
+                    </td>
+                    <td>
+                        <a class="btn btn-light" th:href="@{/tombstones/{id}/edit(id=${t.id})}">Edit</a>
+                        <form th:action="@{/tombstones/{id}/delete(id=${t.id})}" method="post"
+                              style="display:inline"
+                              onsubmit="return confirm('Delete this tombstone?');">
+                            <button class="btn" type="submit">Delete</button>
+                        </form>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </main>
+
+</div>
+</body>
+</html>

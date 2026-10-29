@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<body>
+
+<aside th:fragment="sidebar(active)" class="sidebar">
+    <div class="brand">
+        StoneLegacy
+        <small>MEMORIALS</small>
+    </div>
+
+    <nav>
+        <a href="#" th:classappend="${active == 'dashboard'} ? 'active'">Dashboard</a>
+        <a href="#" th:classappend="${active == 'orders'} ? 'active'">Orders</a>
+        <a href="#" th:classappend="${active == 'customers'} ? 'active'">Customers</a>
+        <a th:href="@{/tombstones}" th:classappend="${active == 'tombstones'} ? 'active'">Tombstones</a>
+        <a th:href="@{/ornaments}" th:classappend="${active == 'ornaments'} ? 'active'">Ornaments</a>
+        <a href="#" th:classappend="${active == 'production'} ? 'active'">Production</a>
+        <a href="#" th:classappend="${active == 'deliveries'} ? 'active'">Deliveries</a>
+        <a href="#" th:classappend="${active == 'invoices'} ? 'active'">Invoices</a>
+        <a href="#" th:classappend="${active == 'reports'} ? 'active'">Reports</a>
+        <a href="#" th:classappend="${active == 'settings'} ? 'active'">Settings</a>
+        <a th:href="@{/svg-library}" th:classappend="${active == 'svg'} ? 'active'">SVG library</a>
+        <a th:href="@{/designer}" th:classappend="${active == 'designer'} ? 'active'">Designer</a>
+    </nav>
+
+    <div class="user">
+        <strong>Admin User</strong>
+        <span>Manager</span>
+    </div>
+</aside>
+
+</body>
+</html>
