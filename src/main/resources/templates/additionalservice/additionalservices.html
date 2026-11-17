@@ -37,11 +37,11 @@
 
                     <td>
                         <a class="btn btn-light"
-                           th:href="@{//additionalservices/{id}/edit(id=${s.id})}">
+                           th:href="@{/additionalservices/{id}/edit(id=${s.id})}">
                             Edit
                         </a>
 
-                        <form th:action="@{//additionalservices/{id}/delete(id=${s.id})}"
+                        <form th:action="@{/additionalservices/{id}/delete(id=${s.id})}"
                               method="post"
                               style="display:inline"
                               onsubmit="return confirm('Delete this service?');">

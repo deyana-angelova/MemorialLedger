@@ -32,13 +32,13 @@ public class OrnamentViewController {
         model.addAttribute("ornaments", repo.findAll());
         return "ornament/ornaments";
     }
-
+    //get date from form
     @GetMapping("/new")
     public String newForm(Model model) {
         model.addAttribute("ornament", new Ornament());
         return "ornament/form";
     }
-
+    //add new ornament to repo
     @PostMapping
     public String create(@ModelAttribute Ornament ornament, @RequestParam("image") MultipartFile image,
                          @RequestParam(value = "svg", required = false) MultipartFile svg) throws IOException {
@@ -56,13 +56,13 @@ public class OrnamentViewController {
         repo.save(ornament);
         return "redirect:/ornaments";
     }
-
+    //get ornament to edit by id
     @GetMapping("/{id}/edit")
     public String editForm(@PathVariable UUID Id, Model model) {
         model.addAttribute("ornament", repo.findById(Id).orElseThrow());
         return "ornament/form";
     }
-
+    //update ornament
     @PostMapping("/{id}")
     public String update(@PathVariable UUID id,
                          @ModelAttribute Ornament form,
@@ -87,6 +87,11 @@ public class OrnamentViewController {
             existing.setSvgFileName(svgStorage.save(svg));
         }
         repo.save(existing);
+        return "redirect:/ornaments";
+    }
+    @PostMapping("/{id}/delete")
+    public String delete(@PathVariable("id") UUID id){
+        repo.deleteById(id);
         return "redirect:/ornaments";
     }
 }
