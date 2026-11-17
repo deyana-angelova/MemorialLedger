@@ -32,7 +32,7 @@ public class OrnamentViewController {
         model.addAttribute("ornaments", repo.findAll());
         return "ornament/ornaments";
     }
-    //get date from form
+    //get data from form
     @GetMapping("/new")
     public String newForm(Model model) {
         model.addAttribute("ornament", new Ornament());

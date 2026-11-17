@@ -20,8 +20,8 @@
 
         <div class="card" style="padding: 20px;">
             <form th:action="${additionalservice.id != null}
-    ? @{/additionalservices/{id}(id=${additionalservice.id})}
-    : @{/additionalservices}"
+        ? @{/additionalservices/{id}(id=${additionalservice.id})}
+        : @{/additionalservices}"
                   th:object="${additionalservice}"
                   method="post">
 

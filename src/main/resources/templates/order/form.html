@@ -1,0 +1,505 @@
+
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Memorial Order | StoneLegacy</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            padding: 30px;
+            background: #e9e9e9;
+            font-family: "Times New Roman", serif;
+            color: #222;
+        }
+
+        .paper {
+            width: 210mm;
+            min-height: 297mm;
+            margin: auto;
+            padding: 16mm 18mm;
+            background: white;
+            box-shadow: 0 3px 15px rgba(0,0,0,.15);
+        }
+
+        .header {
+            text-align: center;
+            border-bottom: 2px solid #222;
+            padding-bottom: 15px;
+            margin-bottom: 20px;
+        }
+
+        .brand {
+            font-size: 27px;
+            font-weight: bold;
+            letter-spacing: 3px;
+        }
+
+        .subtitle {
+            font-size: 11px;
+            letter-spacing: 4px;
+        }
+
+        .document-title {
+            margin-top: 18px;
+            font-size: 21px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .section {
+            margin-top: 19px;
+        }
+
+        .section-title {
+            font-size: 14px;
+            font-weight: bold;
+            text-transform: uppercase;
+            border-bottom: 1px solid #555;
+            padding-bottom: 5px;
+            margin-bottom: 10px;
+        }
+
+        .field {
+            display: flex;
+            align-items: baseline;
+            gap: 8px;
+            margin: 11px 0;
+            font-size: 14px;
+        }
+
+        .field-label {
+            white-space: nowrap;
+        }
+
+        .line-input {
+            flex: 1;
+            min-width: 0;
+            border: none;
+            border-bottom: 1px solid #333;
+            border-radius: 0;
+            outline: none;
+            padding: 3px 5px;
+            background: transparent;
+            font-family: inherit;
+            font-size: 14px;
+        }
+
+        .line-input:focus {
+            border-bottom: 2px solid #777;
+            background: #fafafa;
+        }
+
+        select.line-input {
+            cursor: pointer;
+        }
+
+        .deceased-container {
+            max-height: 160px;
+            overflow-y: auto;
+            padding-right: 8px;
+        }
+
+        .deceased-row {
+            display: flex;
+            align-items: baseline;
+            gap: 8px;
+            margin: 10px 0;
+            font-size: 14px;
+        }
+
+        .deceased-row .line-input {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .number {
+            width: 20px;
+            flex-shrink: 0;
+        }
+
+        .add-deceased {
+            margin-top: 8px;
+            padding: 6px 12px;
+            background: transparent;
+            border: 1px solid #777;
+            cursor: pointer;
+            font-family: inherit;
+            font-size: 13px;
+        }
+
+        .remove-deceased {
+            border: none;
+            background: transparent;
+            color: #a33;
+            font-size: 19px;
+            cursor: pointer;
+        }
+
+        .notes-input {
+            width: 100%;
+            height: 75px;
+            resize: vertical;
+            border: none;
+            border-bottom: 1px solid #333;
+            outline: none;
+            font-family: inherit;
+            font-size: 14px;
+            background: repeating-linear-gradient(
+                to bottom,
+                transparent 0,
+                transparent 23px,
+                #999 24px
+            );
+        }
+
+        .bottom-area {
+            display: flex;
+            align-items: flex-end;
+            gap: 25px;
+            margin-top: 30px;
+        }
+
+        .svg-area {
+            width: 48%;
+            height: 135px;
+            border: 1px dashed #777;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #999;
+            font-size: 12px;
+            text-align: center;
+        }
+
+        .signatures {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 35px;
+            padding-bottom: 5px;
+        }
+
+        .signature {
+            border-top: 1px solid #222;
+            padding-top: 6px;
+            text-align: center;
+            font-size: 12px;
+        }
+
+        .footer {
+            margin-top: 25px;
+            padding-top: 9px;
+            border-top: 1px solid #777;
+            text-align: center;
+            font-size: 11px;
+            color: #555;
+        }
+
+        .actions {
+            width: 210mm;
+            margin: 0 auto 15px;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .action-button {
+            padding: 11px 22px;
+            border: none;
+            background: #292929;
+            color: white;
+            cursor: pointer;
+            text-decoration: none;
+            font-size: 14px;
+        }
+
+        .action-button.secondary {
+            background: #777;
+        }
+
+        .save-area {
+            text-align: center;
+            margin: 20px;
+        }
+
+        @media print {
+            @page {
+                size: A4;
+                margin: 0;
+            }
+
+            body {
+                padding: 0;
+                background: white;
+            }
+
+            .paper {
+                width: 210mm;
+                min-height: 297mm;
+                margin: 0;
+                box-shadow: none;
+            }
+
+            .actions,
+            .save-area,
+            .add-deceased,
+            .remove-deceased {
+                display: none !important;
+            }
+
+            .deceased-container {
+                max-height: none;
+                overflow: visible;
+            }
+
+            .line-input,
+            .notes-input {
+                background: transparent !important;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="actions">
+    <a class="action-button secondary" th:href="@{/orders}">
+        Cancel
+    </a>
+
+    <button class="action-button" type="button"
+            onclick="window.print()">
+        Print Form
+    </button>
+</div>
+
+<form th:action="${order.Id != null}
+        ? @{/orders/{id}(id=${order.Id})}
+        : @{/orders}"
+      th:object="${order}"
+      method="post">
+
+    <div class="paper">
+
+        <header class="header">
+            <div class="brand">STONELEGACY</div>
+            <div class="subtitle">MEMORIALS</div>
+            <div class="document-title">Memorial Order Form</div>
+        </header>
+
+        <div style="text-align:right; font-size:13px;">
+            Order No:
+            <span th:text="${order.Id != null ? order.Id : 'New Order'}">
+                New Order
+            </span>
+        </div>
+        <div class="form-section">
+            <h3>Client Details</h3>
+
+            <label>Client Name</label>
+            <input type="text"
+                   name="clientName"
+                   class="line-input"
+                   placeholder="Enter client's full name"
+                   required>
+
+            <label>Phone Number</label>
+            <input type="tel"
+                   name="clientPhone"
+                   class="line-input"
+                   placeholder="Enter phone number"
+                   required>
+        </div>
+        <!-- DECEASED INFORMATION -->
+        <section class="section">
+
+            <div class="section-title">1. Deceased Information</div>
+
+            <div id="deceased-container" class="deceased-container">
+
+                <div class="deceased-row"
+                     th:each="name, iter : ${order.Deceased}">
+
+                    <span class="number"
+                          th:text="${iter.index + 1} + '.'">1.</span>
+
+                    <span class="field-label">Full Name:</span>
+
+                    <input class="line-input deceased-input"
+                           type="text"
+                           th:field="*{Deceased[__${iter.index}__]}">
+
+                    <button type="button"
+                            class="remove-deceased"
+                            onclick="removeDeceased(this)">×</button>
+                </div>
+
+            </div>
+
+            <button type="button"
+                    class="add-deceased"
+                    onclick="addDeceased()">
+                + Add deceased
+            </button>
+
+            <div class="field">
+                <span class="field-label">Cemetery:</span>
+                <input class="line-input" type="text"
+                       th:field="*{Cemetery}">
+            </div>
+
+        </section>
+
+        <!-- MEMORIAL DETAILS -->
+        <section class="section">
+
+            <div class="section-title">2. Memorial Details</div>
+
+            <div class="field">
+                <span class="field-label">Tombstone Catalogue ID:</span>
+                <input class="line-input" type="text"
+                       th:field="*{TombstoneId}">
+            </div>
+
+            <div class="field">
+                <span class="field-label">Ceramic Photo ID:</span>
+                <input class="line-input" type="text"
+                       th:field="*{CeramicPhotoId}">
+            </div>
+
+        </section>
+
+        <!-- ORDER DETAILS -->
+        <section class="section">
+
+            <div class="section-title">3. Order Details</div>
+
+            <div class="field">
+                <label>Order Date</label>
+                <input type="date" th:field="*{DateOfOrder}">
+
+                <label>Deadline</label>
+                <input type="date" th:field="*{Deadline}">
+            </div>
+
+            <div class="field">
+                <span class="field-label">Status:</span>
+
+                <select class="line-input" th:field="*{status}">
+                    <option value="">Select status</option>
+                    <option th:each="s : ${statuses}"
+                            th:value="${s}"
+                            th:text="${s}">
+                    </option>
+                </select>
+            </div>
+
+            <div class="field">
+                <span class="field-label">Total Price:</span>
+                <input class="line-input" type="number"
+                       step="0.01" min="0"
+                       th:field="*{TotalPrice}">
+                <span>BGN</span>
+            </div>
+
+        </section>
+
+        <!-- NOTES -->
+        <section class="section">
+
+            <div class="section-title">4. Additional Notes</div>
+
+            <textarea class="notes-input"></textarea>
+
+        </section>
+
+        <!-- SVG WORKSPACE AND SIGNATURES -->
+        <div class="bottom-area">
+
+            <div class="svg-area">
+                SVG DESIGN WORKSPACE
+            </div>
+
+            <div class="signatures">
+                <div class="signature">Client Signature</div>
+                <div class="signature">Employee Signature</div>
+            </div>
+
+        </div>
+
+        <footer class="footer">
+            STONELEGACY MEMORIALS · ORDER DOCUMENT
+        </footer>
+
+    </div>
+
+    <div class="save-area">
+        <button class="action-button" type="submit">
+            Save Order
+        </button>
+    </div>
+
+</form>
+
+<script>
+    function updateDeceasedNames() {
+        const rows = document.querySelectorAll(
+            '#deceased-container .deceased-row'
+        );
+
+        rows.forEach((row, index) => {
+            const input = row.querySelector('.deceased-input');
+
+            row.querySelector('.number').textContent =
+                (index + 1) + '.';
+
+            input.name = 'Deceased[' + index + ']';
+            input.id = 'Deceased' + index;
+        });
+    }
+
+    function addDeceased() {
+        const container = document.getElementById('deceased-container');
+
+        const row = document.createElement('div');
+        row.className = 'deceased-row';
+
+        row.innerHTML = `
+            <span class="number"></span>
+            <span class="field-label">Full Name:</span>
+            <input class="line-input deceased-input" type="text">
+            <button type="button" class="remove-deceased"
+                    onclick="removeDeceased(this)">×</button>
+        `;
+
+        container.appendChild(row);
+
+        updateDeceasedNames();
+
+        container.scrollTop = container.scrollHeight;
+
+        row.querySelector('input').focus();
+    }
+
+    function removeDeceased(button) {
+        const container = document.getElementById('deceased-container');
+
+        button.closest('.deceased-row').remove();
+
+        if (container.children.length === 0) {
+            addDeceased();
+        }
+
+        updateDeceasedNames();
+    }
+
+    updateDeceasedNames();
+</script>
+
+</body>
+</html>

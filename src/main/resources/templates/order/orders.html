@@ -1,0 +1,118 @@
+
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Orders | StoneLegacy</title>
+    <link rel="stylesheet" th:href="@{/style.css}">
+</head>
+<body>
+<div class="app">
+
+    <aside th:replace="~{fragments/layout :: sidebar('orders')}"></aside>
+
+    <main class="content">
+
+        <header class="topbar">
+            <div>
+                <h1>Orders</h1>
+                <p style="color: #777; margin-top: 5px;">
+                    Manage memorial orders and track their progress.
+                </p>
+            </div>
+
+            <a class="btn" th:href="@{/orders/new}">
+                + Add Order
+            </a>
+        </header>
+
+        <div class="card" style="padding: 20px;">
+
+            <div style="display: flex; justify-content: space-between;
+                        align-items: center; margin-bottom: 20px;">
+                <h2 style="margin: 0;">All Orders</h2>
+                <span style="color: #777;"
+                      th:text="${#lists.size(orders)} + ' orders'">
+                    0 orders
+                </span>
+            </div>
+
+            <div style="overflow-x: auto;">
+                <table>
+                    <thead>
+                    <tr>
+                        <th>Order ID</th>
+                        <th>Client</th>
+                        <th>Deceased</th>
+                        <th>Cemetery</th>
+                        <th>Order Date</th>
+                        <th>Deadline</th>
+                        <th>Status</th>
+                        <th>Total Price</th>
+                        <th>Actions</th>
+                    </tr>
+                    </thead>
+
+                    <tbody>
+                    <tr th:each="o : ${orders}">
+                        <td>
+                            <span style="font-size: 12px; color: #777;"
+                                  th:text="${#strings.substring(o.Id.toString(), 0, 8)}">
+                            </span>
+                        </td>
+
+                        <td th:text="${o.client != null ? o.client.name : 'Unassigned'}">
+                            Client
+                        </td>
+
+                        <td>
+                            <span th:each="name, iter : ${o.Deceased}">
+                                <span th:text="${name}"></span>
+                                <span th:if="${!iter.last}">, </span>
+                            </span>
+                        </td>
+
+                        <td th:text="${o.Cemetery}">Cemetery</td>
+
+                        <td th:text="${o.DateOfOrder != null ? #dates.format(o.DateOfOrder, 'dd MMM yyyy') : '-'}">
+                        </td>
+
+                        <td th:text="${o.Deadline != null ? #dates.format(o.Deadline, 'dd MMM yyyy') : '-'}">
+                        </td>
+
+                        <td>
+                            <span class="badge"
+                                  th:text="${o.status}"
+                                  th:classappend="${o.status != null and o.status.toString() == 'COMPLETED'} ? ' badge-success' :
+                                                   (${o.status != null and o.status.toString() == 'PENDING'} ? ' badge-warning' : ' badge-neutral')">
+                            </span>
+                        </td>
+
+                        <td>
+                            <strong th:text="${o.TotalPrice != null ? #numbers.formatDecimal(o.TotalPrice, 1, 2) + ' лв.' : '-'}">
+                            </strong>
+                        </td>
+
+                        <td>
+                            <a class="btn btn-light"
+                               th:href="@{/orders/{id}/edit(id=${o.Id})}">
+                                Edit
+                            </a>
+                        </td>
+                    </tr>
+
+                    <tr th:if="${#lists.isEmpty(orders)}">
+                        <td colspan="9" style="text-align: center; padding: 40px; color: #888;">
+                            No orders yet. Click "+ Add Order" to create your first order.
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+
+        </div>
+
+    </main>
+</div>
+</body>
+</html>

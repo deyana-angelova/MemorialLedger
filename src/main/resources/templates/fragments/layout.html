@@ -10,7 +10,7 @@
 
     <nav>
         <a href="#" th:classappend="${active == 'dashboard'} ? 'active'">Dashboard</a>
-        <a href="#" th:classappend="${active == 'orders'} ? 'active'">Orders</a>
+        <a th:href="@{/orders}" th:classappend="${active == 'orders'} ? 'active'">Orders</a>
         <a href="#" th:classappend="${active == 'customers'} ? 'active'">Customers</a>
         <a th:href="@{/tombstones}" th:classappend="${active == 'tombstones'} ? 'active'">Tombstones</a>
         <a th:href="@{/ornaments}" th:classappend="${active == 'ornaments'} ? 'active'">Ornaments</a>
