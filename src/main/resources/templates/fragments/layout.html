@@ -21,6 +21,10 @@
         <a href="#" th:classappend="${active == 'settings'} ? 'active'">Settings</a>
         <a th:href="@{/svg-library}" th:classappend="${active == 'svg'} ? 'active'">SVG library</a>
         <a th:href="@{/designer}" th:classappend="${active == 'designer'} ? 'active'">Designer</a>
+        <a th:href="@{/additionalservices}"
+           th:classappend="${active == 'additional-services'} ? 'active'">
+            Additional Services
+        </a>
     </nav>
 
     <div class="user">

@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Additional Services</title>
+    <link rel="stylesheet" th:href="@{/style.css}">
+</head>
+<body>
+<div class="app">
+
+    <aside th:replace="~{fragments/layout :: sidebar('additional-services')}"></aside>
+
+    <main class="content">
+        <header class="topbar">
+            <h1>Additional Services</h1>
+            <a class="btn" th:href="@{/additionalservices/new}">+ Add service</a>
+        </header>
+
+        <div class="card">
+            <table>
+                <thead>
+                <tr>
+                    <th>Service #</th>
+                    <th>Name</th>
+                    <th>Description</th>
+                    <th>Price</th>
+                    <th></th>
+                </tr>
+                </thead>
+
+                <tbody>
+                <tr th:each="s : ${additionalServices}">
+                    <td th:text="${s.id}"></td>
+                    <td th:text="${s.name}"></td>
+                    <td th:text="${s.description}"></td>
+                    <td th:text="${s.price}"></td>
+
+                    <td>
+                        <a class="btn btn-light"
+                           th:href="@{//additionalservices/{id}/edit(id=${s.id})}">
+                            Edit
+                        </a>
+
+                        <form th:action="@{//additionalservices/{id}/delete(id=${s.id})}"
+                              method="post"
+                              style="display:inline"
+                              onsubmit="return confirm('Delete this service?');">
+
+                            <button class="btn" type="submit">Delete</button>
+                        </form>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </main>
+
+</div>
+</body>
+</html>
