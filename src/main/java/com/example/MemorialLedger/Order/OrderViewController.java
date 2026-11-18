@@ -12,10 +12,13 @@ import java.util.UUID;
 public class OrderViewController {
     private final OrderRepository repo;
     private final ClientRepository clientRepo;
+    private final AdditionalServicesRepository additionalServicesRepo;
 
-    public OrderViewController(OrderRepository repo, ClientRepository clientRepo){
+    public OrderViewController(OrderRepository repo, ClientRepository clientRepo,
+                               AdditionalServicesRepository additionalServicesRepo){
         this.repo = repo;
         this.clientRepo = clientRepo;
+        this.additionalServicesRepo = additionalServicesRepo;
     }
     //get all
     @GetMapping
@@ -29,6 +32,7 @@ public class OrderViewController {
     public String newForm(Model model) {
         model.addAttribute("order", new Order());
         model.addAttribute("clients", clientRepo.findAll());
+        model.addAttribute("additionalServices", additionalServicesRepo.findAll());
         return "order/form";
     }
     //add new order to db
@@ -54,15 +58,28 @@ public class OrderViewController {
     public String editForm(@PathVariable("id") UUID id, Model model) {
         model.addAttribute("order", repo.findById(id).orElseThrow());
         model.addAttribute("clients", clientRepo.findAll());
+        model.addAttribute("additionalServices", additionalServicesRepo.findAll());
         return "order/form";
     }
     //update existing order
     @PostMapping("/{id}")
-    public String update(@PathVariable UUID id,
-                         @ModelAttribute Order form){
+    public String update(
+            @PathVariable UUID id,
+            @ModelAttribute Order form,
+            @RequestParam String clientId,
+            @RequestParam String clientName,
+            @RequestParam String clientPhone) {
+
         Order existing = repo.findById(id).orElseThrow();
 
-        existing.client = form.client;
+        Client client = clientRepo.findById(UUID.fromString(clientId))
+                .orElseThrow();
+
+        client.Name = clientName;
+        client.PhoneNumber = clientPhone;
+        clientRepo.save(client);
+
+        existing.client = client;
         existing.Deceased = form.Deceased;
         existing.TombstoneId = form.TombstoneId;
         existing.Cemetery = form.Cemetery;

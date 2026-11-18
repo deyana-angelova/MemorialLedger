@@ -1,0 +1,50 @@
+
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Clients</title>
+    <link rel="stylesheet" th:href="@{/style.css}">
+</head>
+<body>
+<div class="app">
+
+    <aside th:replace="~{fragments/layout :: sidebar('clients')}"></aside>
+
+    <main class="content">
+        <header class="topbar">
+            <h1>Clients</h1>
+        </header>
+
+        <div class="card">
+            <table>
+                <thead>
+                <tr>
+                    <th>Client #</th>
+                    <th>Name</th>
+                    <th>Phone Number</th>
+                    <th>Total Orders</th>
+                </tr>
+                </thead>
+
+                <tbody>
+                <tr th:each="c : ${clients}">
+                    <td th:text="${c.Id}"></td>
+                    <td th:text="${c.Name}"></td>
+                    <td th:text="${c.PhoneNumber}"></td>
+                    <td th:text="${c.orders != null ? c.orders.size() : 0}"></td>
+                </tr>
+
+                <tr th:if="${#lists.isEmpty(clients)}">
+                    <td colspan="4" style="text-align: center;">
+                        No clients registered yet.
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </main>
+
+</div>
+</body>
+</html>

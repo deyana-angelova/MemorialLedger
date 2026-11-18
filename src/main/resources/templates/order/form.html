@@ -298,22 +298,29 @@
                 New Order
             </span>
         </div>
-        <div class="form-section">
-            <h3>Client Details</h3>
+        <div class="section">
+            <div class="section-title">Client Details</div>
 
-            <label>Client Name</label>
-            <input type="text"
-                   name="clientName"
-                   class="line-input"
-                   placeholder="Enter client's full name"
-                   required>
+            <input type="hidden" name="clientId"
+                   th:value="${order.client != null ? order.client.Id : ''}">
 
-            <label>Phone Number</label>
-            <input type="tel"
-                   name="clientPhone"
-                   class="line-input"
-                   placeholder="Enter phone number"
-                   required>
+            <div class="field">
+                <span class="field-label">Client Name:</span>
+                <input class="line-input"
+                       type="text"
+                       name="clientName"
+                       th:value="${order.client != null ? order.client.Name : ''}"
+                       required>
+            </div>
+
+            <div class="field">
+                <span class="field-label">Phone Number:</span>
+                <input class="line-input"
+                       type="tel"
+                       name="clientPhone"
+                       th:value="${order.client != null ? order.client.PhoneNumber : ''}"
+                       required>
+            </div>
         </div>
         <!-- DECEASED INFORMATION -->
         <section class="section">
@@ -381,10 +388,14 @@
 
             <div class="field">
                 <label>Order Date</label>
-                <input type="date" th:field="*{DateOfOrder}">
+                <input type="text"
+                       th:field="*{DateOfOrder}"
+                       placeholder="dd/MM/yyyy">
 
                 <label>Deadline</label>
-                <input type="date" th:field="*{Deadline}">
+                <input type="text"
+                       th:field="*{Deadline}"
+                       placeholder="dd/MM/yyyy">
             </div>
 
             <div class="field">
