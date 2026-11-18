@@ -5,6 +5,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
+import java.util.List;
 import java.util.UUID;
 
 @Controller
@@ -40,7 +41,8 @@ public class OrderViewController {
     public String create(
             @ModelAttribute Order order,
             @RequestParam String clientName,
-            @RequestParam String clientPhone) {
+            @RequestParam String clientPhone,
+            @RequestParam(required = false) List<String> additionalServiceIds) {
 
         Client client = new Client();
         client.Name = clientName;
@@ -49,6 +51,15 @@ public class OrderViewController {
         clientRepo.save(client);
 
         order.client = client;
+        List<UUID> serviceIds = additionalServiceIds == null
+                ? List.of()
+                : additionalServiceIds.stream()
+                .filter(id -> id != null && !id.isBlank())
+                .map(UUID::fromString)
+                .toList();
+
+        order.AdditionalServices = additionalServicesRepo.findAllById(serviceIds);
+
         repo.save(order);
 
         return "redirect:/orders";
@@ -68,7 +79,8 @@ public class OrderViewController {
             @ModelAttribute Order form,
             @RequestParam String clientId,
             @RequestParam String clientName,
-            @RequestParam String clientPhone) {
+            @RequestParam String clientPhone,
+            @RequestParam(required = false) List<String> additionalServiceIds) {
 
         Order existing = repo.findById(id).orElseThrow();
 
@@ -88,6 +100,16 @@ public class OrderViewController {
         existing.TotalPrice = form.TotalPrice;
         existing.DateOfOrder = form.DateOfOrder;
         existing.Deadline = form.Deadline;
+
+// Get selected additional services
+        List<UUID> serviceIds = additionalServiceIds == null
+                ? List.of()
+                : additionalServiceIds.stream()
+                .filter(serviceId -> serviceId != null && !serviceId.isBlank())
+                .map(UUID::fromString)
+                .toList();
+
+        existing.AdditionalServices = additionalServicesRepo.findAllById(serviceIds);
 
         repo.save(existing);
 

@@ -24,7 +24,8 @@ public class Order {
     public Date DateOfOrder;
     @DateTimeFormat(pattern = "dd/MM/yyyy")
     public Date Deadline;
-
+    @ManyToMany
+    public List<AdditionalService> AdditionalServices;
     public UUID getId() {
         return Id;
     }
@@ -103,5 +104,13 @@ public class Order {
 
     public void setDeadline(Date deadline) {
         Deadline = deadline;
+    }
+
+    public List<AdditionalService> getAdditionalServices() {
+        return AdditionalServices;
+    }
+
+    public void setAdditionalServices(List<AdditionalService> additionalServices) {
+        AdditionalServices = additionalServices;
     }
 }

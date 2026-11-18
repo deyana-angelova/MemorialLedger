@@ -272,9 +272,19 @@
         Cancel
     </a>
 
-    <button class="action-button" type="button"
-            onclick="window.print()">
-        Print Form
+    <button class="action-button print-button" type="button"
+            onclick="window.print()" title="Print form">
+        <svg xmlns="http://www.w3.org/2000/svg"
+             width="20" height="20"
+             viewBox="0 0 24 24"
+             fill="none" stroke="currentColor"
+             stroke-width="2" stroke-linecap="round"
+             stroke-linejoin="round">
+            <polyline points="6 9 6 2 18 2 18 9"/>
+            <path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/>
+            <rect x="6" y="14" width="12" height="8"/>
+        </svg>
+    </button>
     </button>
 </div>
 
@@ -420,10 +430,69 @@
 
         </section>
 
+        <!-- ADDITIONAL SERVICES -->
+        <section class="section">
+            <div class="section-title">4. Additional Services</div>
+
+            <div id="services-container">
+
+                <!-- Existing selected services when editing -->
+                <div class="deceased-row"
+                     th:each="selectedService : ${order.AdditionalServices}">
+
+                    <span class="field-label">Service:</span>
+
+                    <select class="line-input" name="additionalServiceIds">
+                        <option value="">Select a service</option>
+
+                        <option th:each="service : ${additionalServices}"
+                                th:value="${service.id}"
+                                th:text="${service.name + ' - ' + service.price + ' BGN'}"
+                                th:selected="${service.id == selectedService.id}">
+                        </option>
+                    </select>
+
+                    <button type="button"
+                            class="remove-deceased"
+                            onclick="removeService(this)">×</button>
+                </div>
+
+                <!-- Initial empty row for new orders -->
+                <div class="deceased-row"
+                     th:if="${order.AdditionalServices == null or #lists.isEmpty(order.AdditionalServices)}">
+
+                    <span class="field-label">Service:</span>
+
+                    <select class="line-input" name="additionalServiceIds">
+                        <option value="">Select a service</option>
+                        <option th:each="service : ${additionalServices}"
+                                th:value="${service.id}"
+                                th:text="${service.name + ' - ' + service.price + ' BGN'}">
+                        </option>
+                    </select>
+
+                    <button type="button"
+                            class="remove-deceased"
+                            onclick="removeService(this)">×</button>
+                </div>
+
+            </div>
+
+            <button type="button" class="add-deceased" onclick="addService()">
+                + Add service
+            </button>
+        </section>
+        <select id="service-options" style="display:none">
+            <option value="">Select a service</option>
+            <option th:each="service : ${additionalServices}"
+                    th:value="${service.id}"
+                    th:text="${service.name + ' - ' + service.price + ' BGN'}">
+            </option>
+        </select>
         <!-- NOTES -->
         <section class="section">
 
-            <div class="section-title">4. Additional Notes</div>
+            <div class="section-title">5. Additional Notes</div>
 
             <textarea class="notes-input"></textarea>
 
@@ -510,6 +579,29 @@
     }
 
     updateDeceasedNames();
+
+    function addService() {
+    const container = document.getElementById('services-container');
+
+    const row = document.createElement('div');
+    row.className = 'deceased-row';
+
+    row.innerHTML = `
+        <span class="field-label">Service:</span>
+        <select class="line-input" name="additionalServiceIds">
+            ${document.getElementById('service-options').innerHTML}
+        </select>
+        <button type="button" class="remove-deceased"
+                onclick="removeService(this)">×</button>
+    `;
+
+    container.appendChild(row);
+}
+
+function removeService(button) {
+    const container = document.getElementById('services-container');
+    button.closest('.deceased-row').remove();
+}
 </script>
 
 </body>
