@@ -98,6 +98,11 @@
                                th:href="@{/orders/{id}/edit(id=${o.Id})}">
                                 Edit
                             </a>
+                            <form th:action="@{/orders/{id}/delete(id=${o.Id})}" method="post"
+                                  style="display:inline"
+                                  onsubmit="return confirm('Delete this order?');">
+                                <button class="btn" type="submit">Delete</button>
+                            </form>
                         </td>
                     </tr>
 
