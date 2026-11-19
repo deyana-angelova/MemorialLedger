@@ -4,12 +4,12 @@
 
 <aside th:fragment="sidebar(active)" class="sidebar">
     <div class="brand">
-        StoneLegacy
+        MemoryLedger
         <small>MEMORIALS</small>
     </div>
 
     <nav>
-        <a href="#" th:classappend="${active == 'dashboard'} ? 'active'">Dashboard</a>
+        <a th:href="@{/dashboard}" th:classappend="${active == 'dashboard'} ? 'active'">Dashboard</a>
         <a th:href="@{/orders}" th:classappend="${active == 'orders'} ? 'active'">Orders</a>
         <a th:href="@{/clients}" th:classappend="${active == 'clients'} ? 'active'">Customers</a>
         <a th:href="@{/tombstones}" th:classappend="${active == 'tombstones'} ? 'active'">Tombstones</a>

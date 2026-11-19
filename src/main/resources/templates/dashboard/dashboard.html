@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Dashboard</title>
+    <link rel="stylesheet" th:href="@{/style.css}">
+</head>
+<body>
+<div class="app">
+
+    <aside th:replace="~{fragments/layout :: sidebar('dashboard')}"></aside>
+
+    <main class="content">
+
+        <div class="topbar">
+            <div>
+                <h1>Dashboard</h1>
+                <p th:text="${#dates.format(#dates.createToday(), 'EEEE, d MMMM yyyy')}">Thursday, 19 November 2026</p>
+            </div>
+        </div>
+
+        <div class="kpis">
+            <div class="kpi">
+                <span>Total orders</span>
+                <strong th:text="${#lists.size(orders)}">0</strong>
+                <small>All orders in the system</small>
+            </div>
+        </div>
+
+        <div class="section">
+            <h3>All orders</h3>
+            <div class="card">
+                <table>
+                    <tr>
+                        <th>Client</th>
+                        <th>Cemetery</th>
+                        <th>Status</th>
+                        <th>Deadline</th>
+                        <th class="num">Price</th>
+                    </tr>
+                    <tr th:each="o : ${orders}">
+                        <td>
+                            <a th:href="@{/orders/{id}/edit(id=${o.id})}" th:text="${o.client?.Name}">Client</a>
+                        </td>
+                        <td th:text="${o.cemetery}">Cemetery</td>
+                        <td>
+                            <span class="pill"
+                                  th:if="${o.status != null}"
+                                  th:classappend="'st-' + ${o.status}"
+                                  th:text="${#strings.replace(o.status, '_', ' ')}">Status</span>
+                        </td>
+                        <td>
+                            <span th:if="${o.deadline != null}"
+                                  th:classappend="${o.deadline.before(#dates.createToday())} ? 'due-late'"
+                                  th:text="${#dates.format(o.deadline, 'dd MMM yyyy')}">Date</span>
+                            <span class="badge-late"
+                                  th:if="${o.deadline != null and o.deadline.before(#dates.createToday())}">Overdue</span>
+                            <span th:if="${o.deadline == null}">-</span>
+                        </td>
+                        <td class="num"
+                            th:text="${o.totalPrice != null} ? ${#numbers.formatDecimal(o.totalPrice, 1, 'COMMA', 2, 'POINT')} + ' €' : '-'">0 €</td>
+                    </tr>
+                </table>
+                <p class="empty" th:if="${#lists.isEmpty(orders)}">No orders yet.</p>
+            </div>
+        </div>
+
+    </main>
+</div>
+</body>
+</html>

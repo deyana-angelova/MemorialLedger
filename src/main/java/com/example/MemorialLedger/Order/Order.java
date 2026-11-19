@@ -1,116 +1,82 @@
 package com.example.MemorialLedger.Order;
+
 import jakarta.persistence.*;
 import org.springframework.format.annotation.DateTimeFormat;
+
+import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
+
 @Entity
 @Table(name = "orders")
 public class Order {
+
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
-    public UUID Id;
+    private UUID id;
+
     @ManyToOne
     @JoinColumn(name = "client_id")
-    public Client client;
+    private Client client;
+
     @ElementCollection
-    public List<String> Deceased;
-    public String TombstoneId;
-    public String Cemetery;
-    public Status status;
-    public String CeramicPhotoId;
-    public Float TotalPrice;
+    private List<String> deceased = new ArrayList<>();
+
+    private String tombstoneId;
+    private String cemetery;
+
+    @Enumerated(EnumType.STRING)
+    private Status status;
+
+    private String ceramicPhotoId;
+
+    @Column(precision = 10, scale = 2)
+    private BigDecimal totalPrice;
+
+    @Temporal(TemporalType.DATE)
     @DateTimeFormat(pattern = "dd/MM/yyyy")
-    public Date DateOfOrder;
+    private Date dateOfOrder;
+
+    @Temporal(TemporalType.DATE)
     @DateTimeFormat(pattern = "dd/MM/yyyy")
-    public Date Deadline;
+    private Date deadline;
+
     @ManyToMany
-    public List<AdditionalService> AdditionalServices;
-    public UUID getId() {
-        return Id;
-    }
+    private List<AdditionalService> additionalServices = new ArrayList<>();
 
-    public void setId(UUID id) {
-        Id = id;
-    }
+    public UUID getId() { return id; }
+    public void setId(UUID id) { this.id = id; }
 
-    public Client getClient() {
-        return client;
-    }
+    public Client getClient() { return client; }
+    public void setClient(Client client) { this.client = client; }
 
-    public void setClient(Client client) {
-        this.client = client;
-    }
+    public List<String> getDeceased() { return deceased; }
+    public void setDeceased(List<String> deceased) { this.deceased = deceased; }
 
-    public List<String> getDeceased() {
-        return Deceased;
-    }
+    public String getTombstoneId() { return tombstoneId; }
+    public void setTombstoneId(String tombstoneId) { this.tombstoneId = tombstoneId; }
 
-    public void setDeceased(List<String> deceased) {
-        Deceased = deceased;
-    }
+    public String getCemetery() { return cemetery; }
+    public void setCemetery(String cemetery) { this.cemetery = cemetery; }
 
-    public String getTombstoneId() {
-        return TombstoneId;
-    }
+    public Status getStatus() { return status; }
+    public void setStatus(Status status) { this.status = status; }
 
-    public void setTombstoneId(String tombstoneId) {
-        TombstoneId = tombstoneId;
-    }
+    public String getCeramicPhotoId() { return ceramicPhotoId; }
+    public void setCeramicPhotoId(String ceramicPhotoId) { this.ceramicPhotoId = ceramicPhotoId; }
 
-    public String getCemetery() {
-        return Cemetery;
-    }
+    public BigDecimal getTotalPrice() { return totalPrice; }
+    public void setTotalPrice(BigDecimal totalPrice) { this.totalPrice = totalPrice; }
 
-    public void setCemetery(String cemetery) {
-        Cemetery = cemetery;
-    }
+    public Date getDateOfOrder() { return dateOfOrder; }
+    public void setDateOfOrder(Date dateOfOrder) { this.dateOfOrder = dateOfOrder; }
 
-    public Status getStatus() {
-        return status;
-    }
+    public Date getDeadline() { return deadline; }
+    public void setDeadline(Date deadline) { this.deadline = deadline; }
 
-    public void setStatus(Status status) {
-        this.status = status;
-    }
-
-    public String getCeramicPhotoId() {
-        return CeramicPhotoId;
-    }
-
-    public void setCeramicPhotoId(String ceramicPhotoId) {
-        CeramicPhotoId = ceramicPhotoId;
-    }
-
-    public Float getTotalPrice() {
-        return TotalPrice;
-    }
-
-    public void setTotalPrice(Float totalPrice) {
-        TotalPrice = totalPrice;
-    }
-
-    public Date getDateOfOrder() {
-        return DateOfOrder;
-    }
-
-    public void setDateOfOrder(Date dateOfOrder) {
-        DateOfOrder = dateOfOrder;
-    }
-
-    public Date getDeadline() {
-        return Deadline;
-    }
-
-    public void setDeadline(Date deadline) {
-        Deadline = deadline;
-    }
-
-    public List<AdditionalService> getAdditionalServices() {
-        return AdditionalServices;
-    }
-
-    public void setAdditionalServices(List<AdditionalService> additionalServices) {
-        AdditionalServices = additionalServices;
-    }
+    public List<AdditionalService> getAdditionalServices() { return additionalServices; }
+    public void setAdditionalServices(List<AdditionalService> s) { this.additionalServices = s; }
 }

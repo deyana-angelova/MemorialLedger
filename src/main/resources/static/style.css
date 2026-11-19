@@ -134,3 +134,389 @@ input {
     border-radius: 6px;
     display: block;
 }
+
+
+/* ============ Memorial Ledger: marble & granite ============ */
+:root {
+    /* granite */
+    --granite-1: #2a3039;
+    --granite-2: #3a4350;
+    --granite-ink: #d6dce4;
+    --granite-muted: #8f9aa8;
+
+    /* marble */
+    --marble: #f5f6f8;
+    --marble-card: #fdfdfe;
+    --line: #e1e5ea;
+
+    /* text */
+    --ink: #2c3541;
+    --muted: #7a8696;
+
+    /* accent: polished steel blue */
+    --accent: #5f7f9e;
+    --accent-dark: #4b6a87;
+    --accent-soft: #e4ecf4;
+
+    --danger: #b5483f;
+    --danger-soft: #fbeceb;
+
+    --radius: 14px;
+    --shadow: 0 1px 0 rgba(255,255,255,.9) inset, 0 1px 2px rgba(44,53,65,.05), 0 10px 28px rgba(44,53,65,.07);
+
+    /* granite speckle: fine light and dark grains */
+    --speckle: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='260' height='260'%3E%3Cfilter id='a'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' seed='4'/%3E%3CfeColorMatrix values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 9 -4.9'/%3E%3C/filter%3E%3Cfilter id='b'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.7' numOctaves='2' seed='9'/%3E%3CfeColorMatrix values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 9 -4.8'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23a)' opacity='.55'/%3E%3Crect width='100%25' height='100%25' filter='url(%23b)' opacity='.5'/%3E%3C/svg%3E");
+
+    /* marble veins: a few soft hand-drawn curves */
+    --veins: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='1400' height='900' viewBox='0 0 1400 900'%3E%3Cdefs%3E%3Cfilter id='s'%3E%3CfeGaussianBlur stdDeviation='5'/%3E%3C/filter%3E%3Cfilter id='t'%3E%3CfeGaussianBlur stdDeviation='1.2'/%3E%3C/filter%3E%3C/defs%3E%3Cg fill='none' stroke-linecap='round'%3E%3Cpath d='M-40 140 C180 60 300 280 520 210 S820 40 1010 190 S1260 330 1460 250' stroke='%238797a8' stroke-opacity='.16' stroke-width='14' filter='url(%23s)'/%3E%3Cpath d='M-40 140 C180 60 300 280 520 210 S820 40 1010 190 S1260 330 1460 250' stroke='%238797a8' stroke-opacity='.38' stroke-width='1.3' filter='url(%23t)'/%3E%3Cpath d='M120 -30 C210 160 120 330 300 470 S560 640 520 940' stroke='%238797a8' stroke-opacity='.12' stroke-width='12' filter='url(%23s)'/%3E%3Cpath d='M120 -30 C210 160 120 330 300 470 S560 640 520 940' stroke='%238797a8' stroke-opacity='.3' stroke-width='1' filter='url(%23t)'/%3E%3Cpath d='M-30 760 C260 620 420 860 700 740 S1080 560 1450 700' stroke='%238797a8' stroke-opacity='.14' stroke-width='16' filter='url(%23s)'/%3E%3Cpath d='M-30 760 C260 620 420 860 700 740 S1080 560 1450 700' stroke='%238797a8' stroke-opacity='.34' stroke-width='1.2' filter='url(%23t)'/%3E%3Cpath d='M900 -20 C980 200 860 360 1030 520 S1240 760 1180 930' stroke='%238797a8' stroke-opacity='.1' stroke-width='10' filter='url(%23s)'/%3E%3Cpath d='M900 -20 C980 200 860 360 1030 520 S1240 760 1180 930' stroke='%238797a8' stroke-opacity='.26' stroke-width='.9' filter='url(%23t)'/%3E%3C/g%3E%3C/svg%3E");
+}
+
+* { box-sizing: border-box; }
+
+body {
+    margin: 0;
+    font-family: "Segoe UI", Inter, system-ui, Arial, sans-serif;
+    color: var(--ink);
+    -webkit-font-smoothing: antialiased;
+    background-color: var(--marble);
+    background-image:
+        var(--veins),
+        radial-gradient(ellipse at 12% 8%, rgba(255,255,255,.95), transparent 55%),
+        radial-gradient(ellipse at 90% 95%, rgba(205,214,225,.5), transparent 60%),
+        linear-gradient(135deg, #fafbfc 0%, #eef1f5 55%, #f7f8fa 100%);
+    background-size: 1400px 900px, auto, auto, auto;
+    background-attachment: fixed;
+}
+
+h1, h2, h3, .brand { font-family: Georgia, "Times New Roman", serif; }
+a { color: var(--accent-dark); }
+
+/* ---------- layout ---------- */
+.app { display: grid; grid-template-columns: 252px 1fr; min-height: 100vh; }
+
+/* ---------- granite sidebar ---------- */
+.sidebar {
+    position: sticky;
+    top: 0;
+    height: 100vh;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    padding: 30px 16px 24px;
+    color: var(--granite-ink);
+    background-color: var(--granite-1);
+    background-image:
+        var(--speckle),
+        radial-gradient(ellipse at 20% 0%, rgba(255,255,255,.10), transparent 55%),
+        linear-gradient(180deg, var(--granite-2) 0%, var(--granite-1) 100%);
+    background-size: 260px 260px, auto, auto;
+    box-shadow: 1px 0 0 rgba(255,255,255,.06) inset, 4px 0 24px rgba(30,36,45,.18);
+}
+
+.brand {
+    padding: 0 12px 26px;
+    margin-bottom: 14px;
+    font-size: 22px;
+    letter-spacing: .6px;
+    color: #fff;
+    border-bottom: 1px solid rgba(255,255,255,.12);
+}
+
+.brand small {
+    display: block;
+    margin-top: 5px;
+    font-family: "Segoe UI", Arial, sans-serif;
+    font-size: 10px;
+    letter-spacing: 3.5px;
+    color: #a9bdd0;
+}
+
+.sidebar nav { display: flex; flex-direction: column; gap: 3px; flex: 1; }
+
+.sidebar nav a {
+    padding: 10px 14px;
+    border-radius: 9px;
+    border-left: 3px solid transparent;
+    color: var(--granite-ink);
+    text-decoration: none;
+    font-size: 14px;
+    transition: background .15s, color .15s;
+}
+
+.sidebar nav a:hover { background: rgba(255,255,255,.08); color: #fff; }
+
+.sidebar nav a.active {
+    background: rgba(255,255,255,.13);
+    border-left-color: #a9bdd0;
+    color: #fff;
+    font-weight: 600;
+    box-shadow: 0 1px 0 rgba(255,255,255,.08) inset;
+}
+
+.user {
+    padding: 16px 12px 0;
+    border-top: 1px solid rgba(255,255,255,.12);
+    font-size: 13px;
+    color: #fff;
+}
+.user span { display: block; font-size: 12px; color: var(--granite-muted); }
+
+/* ---------- marble content ---------- */
+.content { padding: 38px 46px 64px; max-width: 1400px; }
+
+.topbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    margin-bottom: 30px;
+}
+.topbar h1 { margin: 0; font-size: 31px; font-weight: 600; color: var(--ink); letter-spacing: .3px; text-shadow: 0 1px 0 #fff; }
+.topbar p { margin: 6px 0 0; font-size: 14px; color: var(--muted); }
+
+h3 { margin: 0 0 12px; font-size: 18px; font-weight: 600; color: var(--ink); }
+.section { margin-top: 30px; }
+
+/* polished marble slab */
+.card, .kpi, .pipeline {
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    background-color: var(--marble-card);
+    background-image:
+        var(--veins),
+        linear-gradient(150deg, #ffffff 0%, #f4f6f9 100%);
+    background-size: 900px 580px, auto;
+    background-position: 30% 40%, 0 0;
+}
+/* veins are subtle on cards: lighten them with an overlay */
+.card, .kpi { position: relative; }
+.card { padding: 8px 22px; }
+
+/* ---------- tables ---------- */
+table { width: 100%; border-collapse: collapse; }
+
+th, td {
+    padding: 14px 10px;
+    text-align: left;
+    font-size: 14px;
+    border-bottom: 1px solid rgba(180,192,206,.35);
+}
+
+th {
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 1.2px;
+    color: var(--muted);
+}
+
+tr:last-child td { border-bottom: none; }
+tr:hover > td { background: rgba(228,236,244,.55); }
+td.num, th.num { text-align: right; }
+td .sub { display: block; margin-top: 2px; font-size: 12px; color: var(--muted); }
+
+/* ---------- buttons & forms: granite buttons ---------- */
+.btn {
+    display: inline-block;
+    padding: 10px 20px;
+    border: 1px solid var(--granite-1);
+    border-radius: 9px;
+    text-decoration: none;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 600;
+    color: #fff;
+    background-color: var(--granite-2);
+    background-image: var(--speckle), linear-gradient(180deg, #46505d, var(--granite-1));
+    background-size: 260px 260px, auto;
+    box-shadow: 0 1px 0 rgba(255,255,255,.15) inset, 0 3px 10px rgba(30,36,45,.22);
+    transition: transform .08s, box-shadow .15s, filter .15s;
+}
+.btn:hover { filter: brightness(1.12); }
+.btn:active { transform: translateY(1px); box-shadow: 0 1px 4px rgba(30,36,45,.25); }
+
+.btn-light {
+    color: var(--ink);
+    background: #fff;
+    background-image: none;
+    border: 1px solid #d3dae3;
+    box-shadow: 0 1px 2px rgba(44,53,65,.06);
+}
+.btn-light:hover { background: var(--accent-soft); filter: none; }
+
+input, select, textarea {
+    width: 280px;
+    padding: 9px 12px;
+    font-family: inherit;
+    font-size: 14px;
+    color: var(--ink);
+    background: rgba(255,255,255,.95);
+    border: 1px solid #cdd5df;
+    border-radius: 9px;
+    box-shadow: inset 0 1px 2px rgba(44,53,65,.06);
+}
+
+input:focus, select:focus, textarea:focus {
+    outline: none;
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px rgba(95,127,158,.22);
+}
+
+.thumb {
+    display: block;
+    width: 80px;
+    height: 80px;
+    object-fit: contain;
+    background: #fafbfc;
+    border: 1px solid var(--line);
+    border-radius: 9px;
+}
+
+
+
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Dashboard</title>
+    <link rel="stylesheet" th:href="@{/style.css}">
+</head>
+<body>
+<div class="app">
+
+    <aside th:replace="~{fragments/layout :: sidebar('dashboard')}"></aside>
+
+    <main class="content">
+
+        <!-- hero -->
+        <section class="hero fade">
+            <div>
+                <small>Memorial Ledger</small>
+                <h1>Dashboard</h1>
+                <p th:text="${#dates.format(#dates.createToday(), 'EEEE, d MMMM yyyy')}">Thursday, 19 November 2026</p>
+            </div>
+            <a class="btn" th:href="@{/orders/new}">+ New order</a>
+        </section>
+
+        <!-- KPI cards -->
+        <section class="kpis fade d1">
+            <div class="kpi">
+                <div class="chip">▦</div>
+                <div>
+                    <span>Total orders</span>
+                    <strong th:text="${#lists.size(orders)}">0</strong>
+                </div>
+            </div>
+
+            <div class="kpi">
+                <div class="chip">⚒</div>
+                <div>
+                    <span>In progress</span>
+                    <strong th:text="${#lists.size(orders) - #lists.size(orders.?[status != null and status.name() == 'Installed'])}">0</strong>
+                </div>
+            </div>
+
+            <div class="kpi">
+                <div class="chip good">✓</div>
+                <div>
+                    <span>Installed</span>
+                    <strong th:text="${#lists.size(orders.?[status != null and status.name() == 'Installed'])}">0</strong>
+                </div>
+            </div>
+
+            <div class="kpi alert">
+                <div class="chip warn">!</div>
+                <div>
+                    <span>Overdue</span>
+                    <strong th:text="${#lists.size(orders.?[deadline != null and deadline.before(#dates.createToday()) and (status == null or status.name() != 'Installed')])}">0</strong>
+                </div>
+            </div>
+
+            <div class="kpi">
+                <div class="chip">€</div>
+                <div>
+                    <span>Total value</span>
+                    <strong th:text="${#numbers.formatDecimal(#aggregates.sum(orders.![totalPrice]) ?: 0, 1, 'COMMA', 0, 'POINT')} + ' €'">0 €</strong>
+                </div>
+            </div>
+        </section>
+
+        <!-- pipeline -->
+        <section class="section fade d2">
+            <div class="section-head"><h3>Production pipeline</h3></div>
+            <div class="card pipeline">
+                <div class="stage s1">
+                    <strong th:text="${#lists.size(orders.?[status != null and status.name() == 'Ordered'])}">0</strong>
+                    <span>Ordered</span>
+                </div>
+                <div class="stage s2">
+                    <strong th:text="${#lists.size(orders.?[status != null and status.name() == 'Machine_Processed'])}">0</strong>
+                    <span>Machine processed</span>
+                </div>
+                <div class="stage s3">
+                    <strong th:text="${#lists.size(orders.?[status != null and status.name() == 'Polished'])}">0</strong>
+                    <span>Polished</span>
+                </div>
+                <div class="stage s4">
+                    <strong th:text="${#lists.size(orders.?[status != null and status.name() == 'Installed'])}">0</strong>
+                    <span>Installed</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- orders -->
+        <section class="section fade d3">
+            <div class="section-head">
+                <h3>Orders</h3>
+                <a th:href="@{/orders}">View all →</a>
+            </div>
+            <div class="card">
+                <table>
+                    <tr>
+                        <th>Client</th>
+                        <th>Progress</th>
+                        <th>Deadline</th>
+                        <th class="num">Price</th>
+                    </tr>
+                    <tr th:each="o : ${orders}">
+                        <td>
+                            <div class="person">
+                                <div class="avatar"
+                                     th:text="${o.client != null and o.client.Name != null and !#strings.isEmpty(o.client.Name)} ? ${#strings.toUpperCase(#strings.substring(o.client.Name, 0, 1))} : '?'">A</div>
+                                <div>
+                                    <a th:href="@{/orders/{id}/edit(id=${o.id})}" th:text="${o.client?.Name}">Client</a>
+                                    <span class="sub" th:text="${o.cemetery}">Cemetery</span>
+                                </div>
+                            </div>
+                        </td>
+                        <td>
+                            <div th:if="${o.status != null}">
+                                <div class="progress"><i th:style="'width:' + ${(o.status.ordinal() + 1) * 25} + '%'"></i></div>
+                                <div class="progress-label">
+                                    <span class="pill" th:classappend="'st-' + ${o.status}"
+                                          th:text="${#strings.replace(o.status, '_', ' ')}">Status</span>
+                                </div>
+                            </div>
+                            <span class="muted" th:if="${o.status == null}">-</span>
+                        </td>
+                        <td>
+                            <span th:if="${o.deadline != null}"
+                                  th:classappend="${o.deadline.before(#dates.createToday()) and (o.status == null or o.status.name() != 'Installed')} ? 'due-late'"
+                                  th:text="${#dates.format(o.deadline, 'dd MMM yyyy')}">Date</span>
+                            <span class="badge-late"
+                                  th:if="${o.deadline != null and o.deadline.before(#dates.createToday()) and (o.status == null or o.status.name() != 'Installed')}">Overdue</span>
+                            <span class="muted" th:if="${o.deadline == null}">-</span>
+                        </td>
+                        <td class="num"
+                            th:text="${o.totalPrice != null} ? ${#numbers.formatDecimal(o.totalPrice, 1, 'COMMA', 2, 'POINT')} + ' €' : '-'">0 €</td>
+                    </tr>
+                </table>
+                <p class="empty" th:if="${#lists.isEmpty(orders)}">No orders yet. Create your first one.</p>
+            </div>
+        </section>
+
+    </main>
+</div>
+</body>
+</html>
