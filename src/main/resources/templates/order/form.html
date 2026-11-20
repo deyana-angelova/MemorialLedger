@@ -261,7 +261,33 @@
             .notes-input {
                 background: transparent !important;
             }
+            .design-picker, .design-tools, .design-hint, .d-handle { display: none !important; }
+            .d-layer.sel { outline: none; }
+            .design-stage { border: 1px solid #999; }
+            .design-row { break-inside: avoid; page-break-inside: avoid; }
         }
+
+         .design-picker { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 8px; }
+         .design-picker button { border: 1px solid #ccc; background: #fff; padding: 3px; cursor: pointer; }
+         .design-picker button:hover { border-color: #222; }
+         .design-picker img { width: 56px; height: 56px; object-fit: contain; display: block; }
+         .design-tools { margin: 8px 0; display: flex; gap: 8px; align-items: center; }
+         .design-tools small { color: #777; font-size: 12px; }
+
+        .design-stage { position: relative; width: 100%; height: 320px; border: 1px dashed #777; overflow: hidden; background: #fff; }
+        .design-hint { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; color: #999; font-size: 12px; pointer-events: none; }
+        .d-layer { position: absolute; cursor: move; user-select: none; touch-action: none; }
+        .d-layer img { width: 100%; display: block; pointer-events: none; }
+        .d-layer.sel { outline: 2px solid #2b7cff; }
+        .d-handle { display: none; position: absolute; right: -7px; bottom: -7px; width: 14px; height: 14px;
+            background: #2b7cff; border: 2px solid #fff; border-radius: 50%; cursor: nwse-resize; }
+         .d-layer.sel .d-handle { display: block; }
+
+         .design-row { display: flex; align-items: flex-end; gap: 25px; }
+.design-col { width: 48%; flex-shrink: 0; }
+.signatures-col { flex: 1; display: flex; flex-direction: column; gap: 45px; padding-bottom: 4px; }
+
+.design-stage { height: 170px; }
     </style>
 </head>
 
@@ -285,7 +311,7 @@
             <rect x="6" y="14" width="12" height="8"/>
         </svg>
     </button>
-    </button>
+
 </div>
 
 <form th:action="${order.Id != null}
@@ -297,7 +323,7 @@
     <div class="paper">
 
         <header class="header">
-            <div class="brand">STONELEGACY</div>
+            <div class="brand">FIRM NAME</div>
             <div class="subtitle">MEMORIALS</div>
             <div class="document-title">Memorial Order Form</div>
         </header>
@@ -499,18 +525,42 @@
         </section>
 
         <!-- SVG WORKSPACE AND SIGNATURES -->
-        <div class="bottom-area">
+        <section class="section">
+            <div class="section-title">6. Design</div>
 
-            <div class="svg-area">
-                SVG DESIGN WORKSPACE
+            <input type="hidden" id="design-data" th:field="*{design}">
+
+            <div class="design-row">
+
+                <!-- left: design -->
+                <div class="design-col">
+                    <div class="design-picker">
+                        <button type="button" th:each="f : ${files}"
+                                th:attr="data-src=@{'/svg/' + ${f}}" title="Add to design">
+                            <img th:src="@{'/svg/' + ${f}}" alt="SVG">
+                        </button>
+                    </div>
+
+                    <div class="design-tools">
+                        <button type="button" class="add-deceased" id="d-front">Front</button>
+                        <button type="button" class="add-deceased" id="d-del">Delete</button>
+                        <button type="button" class="add-deceased" id="d-clear">Clear</button>
+                    </div>
+
+                    <div id="design-stage" class="design-stage">
+                        <div id="design-hint" class="design-hint">SVG DESIGN WORKSPACE</div>
+                    </div>
+                </div>
+
+                <!-- right: signatures -->
+                <div class="signatures-col">
+                    <div class="signature">Client Signature</div>
+                    <div class="signature">Employee Signature</div>
+                </div>
+
             </div>
+        </section>
 
-            <div class="signatures">
-                <div class="signature">Client Signature</div>
-                <div class="signature">Employee Signature</div>
-            </div>
-
-        </div>
 
         <footer class="footer">
             STONELEGACY MEMORIALS · ORDER DOCUMENT
@@ -602,6 +652,118 @@ function removeService(button) {
     const container = document.getElementById('services-container');
     button.closest('.deceased-row').remove();
 }
+
+
+/* ---------- SVG design workspace ---------- */
+const dStage = document.getElementById('design-stage');
+const dHint  = document.getElementById('design-hint');
+const dInput = document.getElementById('design-data');
+let dSel = null;
+
+function dSave() {
+    const w = dStage.clientWidth, h = dStage.clientHeight;
+    const data = [...dStage.querySelectorAll('.d-layer')].map(l => ({
+        src: l.dataset.src,
+        x: l.offsetLeft / w * 100,
+        y: l.offsetTop / h * 100,
+        w: l.offsetWidth / w * 100
+    }));
+    dInput.value = data.length ? JSON.stringify(data) : '';
+    dHint.style.display = data.length ? 'none' : 'flex';
+}
+
+function dSelect(l) {
+    if (dSel) dSel.classList.remove('sel');
+    dSel = l;
+    if (dSel) dSel.classList.add('sel');
+}
+
+function dAdd(src, x, y, w) {
+    const layer = document.createElement('div');
+    layer.className = 'd-layer';
+    layer.dataset.src = src;
+    layer.style.left = x + '%';
+    layer.style.top = y + '%';
+    layer.style.width = w + '%';
+
+    const img = document.createElement('img');
+    img.src = src;
+    const handle = document.createElement('div');
+    handle.className = 'd-handle';
+    layer.append(img, handle);
+    dStage.appendChild(layer);
+
+    const toPct = () => {
+        layer.style.left = layer.offsetLeft / dStage.clientWidth * 100 + '%';
+        layer.style.top = layer.offsetTop / dStage.clientHeight * 100 + '%';
+        layer.style.width = layer.offsetWidth / dStage.clientWidth * 100 + '%';
+    };
+
+    layer.addEventListener('pointerdown', e => {
+        if (e.target === handle) return;
+        dSelect(layer);
+        const sx = e.clientX, sy = e.clientY, sl = layer.offsetLeft, st = layer.offsetTop;
+        layer.setPointerCapture(e.pointerId);
+        const move = ev => {
+            layer.style.left = (sl + ev.clientX - sx) + 'px';
+            layer.style.top = (st + ev.clientY - sy) + 'px';
+        };
+        const up = () => {
+            layer.removeEventListener('pointermove', move);
+            layer.removeEventListener('pointerup', up);
+            toPct(); dSave();
+        };
+        layer.addEventListener('pointermove', move);
+        layer.addEventListener('pointerup', up);
+    });
+
+    handle.addEventListener('pointerdown', e => {
+        e.stopPropagation();
+        dSelect(layer);
+        const sx = e.clientX, sw = layer.offsetWidth;
+        handle.setPointerCapture(e.pointerId);
+        const move = ev => { layer.style.width = Math.max(20, sw + ev.clientX - sx) + 'px'; };
+        const up = () => {
+            handle.removeEventListener('pointermove', move);
+            handle.removeEventListener('pointerup', up);
+            toPct(); dSave();
+        };
+        handle.addEventListener('pointermove', move);
+        handle.addEventListener('pointerup', up);
+    });
+
+    layer.addEventListener('wheel', e => {
+        e.preventDefault();
+        layer.style.width = Math.max(20, layer.offsetWidth * (e.deltaY < 0 ? 1.06 : 0.94)) + 'px';
+        toPct(); dSave();
+    }, { passive: false });
+
+    dSelect(layer);
+    dSave();
+}
+
+// add from library
+document.querySelectorAll('.design-picker button').forEach(b =>
+    b.addEventListener('click', () => dAdd(b.dataset.src, 35, 25, 30)));
+
+// toolbar
+document.getElementById('d-front').onclick = () => { if (dSel) { dStage.appendChild(dSel); dSave(); } };
+document.getElementById('d-del').onclick = () => { if (dSel) { dSel.remove(); dSel = null; dSave(); } };
+document.getElementById('d-clear').onclick = () => {
+    dStage.querySelectorAll('.d-layer').forEach(l => l.remove()); dSel = null; dSave();
+};
+dStage.addEventListener('pointerdown', e => { if (e.target === dStage) dSelect(null); });
+
+// restore a saved design (edit page)
+try {
+    const saved = JSON.parse(dInput.value || '[]');
+    saved.forEach(d => dAdd(d.src, d.x, d.y, d.w));
+    dSelect(null);
+} catch (e) { /* empty or invalid design */ }
+dSave();
+
+// make sure the latest state is submitted
+document.querySelector('form').addEventListener('submit', dSave);
 </script>
 
 </body>

@@ -36,14 +36,6 @@
 </head>
 <body>
 <div class="app">
-    <aside th:replace="~{fragments/layout :: sidebar('designer')}"></aside>
-    <main class="content">
-        <header class="topbar">
-            <h1>Designer</h1>
-        </header>
-    </main>
-</div>
-<div class="app">
 
     <aside th:replace="~{fragments/layout :: sidebar('designer')}"></aside>
 
@@ -80,21 +72,123 @@
     </main>
 
 </div>
+
 <script>
     const stage = document.getElementById('stage');
     const hint = document.getElementById('hint');
     let selected = null;
+    let z = 1;
 
-   //prevent the browser from doing the default actions of drag abnd drop
-   //stops it from opening files outside the stage
-   window.addEventListener("dragover", function(e){
+    // stop the browser opening files dropped outside the stage
+    ['dragover', 'drop'].forEach(ev => window.addEventListener(ev, e => e.preventDefault()));
+
+    function select(layer) {
+        if (selected) selected.classList.remove('selected');
+        selected = layer;
+        if (selected) selected.classList.add('selected');
+    }
+
+    function addLayer(src, x, y) {
+        hint.style.display = 'none';
+        const layer = document.createElement('div');
+        layer.className = 'layer';
+        layer.style.width = '220px';
+        layer.style.left = Math.max(0, x - 110) + 'px';
+        layer.style.top = Math.max(0, y - 110) + 'px';
+        layer.style.zIndex = z++;
+
+        const img = document.createElement('img');
+        img.src = src;
+        img.draggable = false;
+        const handle = document.createElement('div');
+        handle.className = 'handle';
+        layer.append(img, handle);
+        stage.appendChild(layer);
+        select(layer);
+
+        // move
+        layer.addEventListener('pointerdown', e => {
+            if (e.target === handle) return;
+            select(layer);
+            const startX = e.clientX, startY = e.clientY;
+            const origX = layer.offsetLeft, origY = layer.offsetTop;
+            layer.setPointerCapture(e.pointerId);
+            const move = ev => {
+                layer.style.left = (origX + ev.clientX - startX) + 'px';
+                layer.style.top = (origY + ev.clientY - startY) + 'px';
+            };
+            const up = () => {
+                layer.removeEventListener('pointermove', move);
+                layer.removeEventListener('pointerup', up);
+            };
+            layer.addEventListener('pointermove', move);
+            layer.addEventListener('pointerup', up);
+        });
+
+        // resize with the corner dot (keeps proportions)
+        handle.addEventListener('pointerdown', e => {
+            e.stopPropagation();
+            select(layer);
+            const startX = e.clientX, startW = layer.offsetWidth;
+            handle.setPointerCapture(e.pointerId);
+            const move = ev => {
+                layer.style.width = Math.max(30, startW + ev.clientX - startX) + 'px';
+            };
+            const up = () => {
+                handle.removeEventListener('pointermove', move);
+                handle.removeEventListener('pointerup', up);
+            };
+            handle.addEventListener('pointermove', move);
+            handle.addEventListener('pointerup', up);
+        });
+
+        // resize with the mouse wheel
+        layer.addEventListener('wheel', e => {
+            e.preventDefault();
+            const w = layer.offsetWidth * (e.deltaY < 0 ? 1.08 : 0.92);
+            layer.style.width = Math.max(30, w) + 'px';
+        }, { passive: false });
+    }
+
+    // drop files from Windows Explorer
+    stage.addEventListener('dragenter', e => { e.preventDefault(); stage.classList.add('over'); });
+    stage.addEventListener('dragover', e => { e.preventDefault(); stage.classList.add('over'); });
+    stage.addEventListener('dragleave', e => { e.preventDefault(); stage.classList.remove('over'); });
+    stage.addEventListener('drop', e => {
         e.preventDefault();
-   });
+        stage.classList.remove('over');
+        const files = Array.from(e.dataTransfer.files || []);
+        if (files.length === 0) {
+            alert('No file received. Drag the .svg from a folder in Windows Explorer.');
+            return;
+        }
+        const rect = stage.getBoundingClientRect();
+        files.forEach((f, i) => {
+            if (!f.name.toLowerCase().endsWith('.svg')) { alert(f.name + ' is not an .svg file'); return; }
+            addLayer(URL.createObjectURL(f), e.clientX - rect.left + i * 20, e.clientY - rect.top + i * 20);
+        });
+    });
 
-   window.addEventListener("drop", function(e){
-        e.preventDefault();
-   });
+    // click a library thumbnail to add it
+    document.querySelectorAll('.p-item').forEach(p =>
+        p.addEventListener('click', () => addLayer(p.dataset.src, 200, 200)));
 
+    // click empty stage = deselect
+    stage.addEventListener('pointerdown', e => { if (e.target === stage) select(null); });
+
+    // toolbar
+    document.getElementById('front').onclick = () => { if (selected) selected.style.zIndex = z++; };
+    document.getElementById('back').onclick = () => { if (selected) selected.style.zIndex = 0; };
+    document.getElementById('del').onclick = () => { if (selected) { selected.remove(); selected = null; } };
+    document.getElementById('bg').onclick = () => stage.classList.toggle('dark');
+    document.getElementById('clear').onclick = () => {
+        stage.querySelectorAll('.layer').forEach(l => l.remove());
+        selected = null;
+        hint.style.display = 'flex';
+    };
+    window.addEventListener('keydown', e => {
+        if (e.key === 'Delete' && selected) { selected.remove(); selected = null; }
+    });
 </script>
 </body>
 </html>

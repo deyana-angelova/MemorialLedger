@@ -1,9 +1,11 @@
 package com.example.MemorialLedger.Order;
 
+import com.example.MemorialLedger.SvgStorage;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.UUID;
 
@@ -13,12 +15,15 @@ public class OrderViewController {
     private final OrderRepository repo;
     private final ClientRepository clientRepo;
     private final AdditionalServicesRepository additionalServicesRepo;
+    private final SvgStorage svgStorage;
 
     public OrderViewController(OrderRepository repo, ClientRepository clientRepo,
-                               AdditionalServicesRepository additionalServicesRepo) {
+                               AdditionalServicesRepository additionalServicesRepo,
+                               SvgStorage svgStorage) {
         this.repo = repo;
         this.clientRepo = clientRepo;
         this.additionalServicesRepo = additionalServicesRepo;
+        this.svgStorage = svgStorage;
     }
 
     // get all
@@ -30,10 +35,12 @@ public class OrderViewController {
 
     // empty form
     @GetMapping("/new")
-    public String newForm(Model model) {
+    public String newForm(Model model) throws IOException{
         model.addAttribute("order", new Order());
         model.addAttribute("clients", clientRepo.findAll());
         model.addAttribute("additionalServices", additionalServicesRepo.findAll());
+        model.addAttribute("statuses", Status.values());
+        model.addAttribute("files", svgStorage.list());
         return "order/form";
     }
 
@@ -60,10 +67,12 @@ public class OrderViewController {
 
     // edit form
     @GetMapping("/{id}/edit")
-    public String editForm(@PathVariable("id") UUID id, Model model) {
+    public String editForm(@PathVariable("id") UUID id, Model model) throws IOException {
         model.addAttribute("order", repo.findById(id).orElseThrow());
         model.addAttribute("clients", clientRepo.findAll());
         model.addAttribute("additionalServices", additionalServicesRepo.findAll());
+        model.addAttribute("statuses", Status.values());
+        model.addAttribute("files", svgStorage.list());
         return "order/form";
     }
 
