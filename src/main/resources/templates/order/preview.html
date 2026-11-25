@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>Order Preview | StoneLegacy</title>
+  <style>
+        * { box-sizing: border-box; }
+        body { margin: 0; padding: 30px; background: #e9e9e9; font-family: "Times New Roman", serif; color: #222; }
+        .paper { width: 210mm; min-height: 297mm; margin: auto; padding: 16mm 18mm; background: #fff; box-shadow: 0 3px 15px rgba(0,0,0,.15); }
+        .header { text-align: center; border-bottom: 2px solid #222; padding-bottom: 15px; margin-bottom: 20px; }
+        .brand { font-size: 27px; font-weight: bold; letter-spacing: 3px; }
+        .subtitle { font-size: 11px; letter-spacing: 4px; }
+        .document-title { margin-top: 18px; font-size: 21px; text-transform: uppercase; letter-spacing: 2px; }
+        .section { margin-top: 19px; }
+        .section-title { font-size: 14px; font-weight: bold; text-transform: uppercase; border-bottom: 1px solid #555; padding-bottom: 5px; margin-bottom: 10px; }
+        .field { display: flex; align-items: baseline; gap: 8px; margin: 11px 0; font-size: 14px; }
+        .field-label { white-space: nowrap; }
+        .value { flex: 1; min-width: 0; border-bottom: 1px solid #333; padding: 3px 5px; min-height: 22px; }
+        .row { display: flex; gap: 20px; }
+        .row .field { flex: 1; }
+
+        .design-row { display: flex; align-items: flex-end; gap: 25px; break-inside: avoid; }
+        .design-col { width: 48%; flex-shrink: 0; }
+        .design-stage { position: relative; width: 100%; height: 170px; border: 1px solid #999; overflow: hidden; background: #fff; }
+        .d-layer { position: absolute; }
+        .d-layer img { width: 100%; display: block; }
+        .signatures-col { flex: 1; display: flex; flex-direction: column; gap: 45px; padding-bottom: 4px; }
+        .signature { border-top: 1px solid #222; padding-top: 6px; text-align: center; font-size: 12px; }
+        .footer { margin-top: 25px; padding-top: 9px; border-top: 1px solid #777; text-align: center; font-size: 11px; color: #555; }
+
+        .actions { width: 210mm; margin: 0 auto 15px; display: flex; justify-content: space-between; }
+        .action-button { padding: 11px 22px; border: none; background: #292929; color: #fff; cursor: pointer; text-decoration: none; font-size: 14px; font-family: Arial, sans-serif; }
+        .action-button.secondary { background: #777; }
+
+        @media print {
+            @page { size: A4; margin: 0; }
+            body { padding: 0; background: #fff; }
+            .paper { margin: 0; box-shadow: none; }
+            .actions { display: none !important; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="actions">
+  <a class="action-button secondary" th:href="@{/orders}">← Back</a>
+  <div>
+    <a class="action-button" th:href="@{/orders/{id}/edit(id=${order.id})}">Edit</a>
+    <button class="action-button" type="button" onclick="window.print()">Print</button>
+  </div>
+</div>
+
+<div class="paper">
+
+  <header class="header">
+    <div class="brand">STONELEGACY</div>
+    <div class="subtitle">MEMORIALS</div>
+    <div class="document-title">Memorial Order Form</div>
+  </header>
+
+  <div style="text-align:right; font-size:13px;">
+    Order No: <span th:text="${order.id}">0000</span>
+  </div>
+
+  <section class="section">
+    <div class="section-title">Client Details</div>
+    <div class="field"><span class="field-label">Client Name:</span>
+      <span class="value" th:text="${order.client?.Name}"></span></div>
+    <div class="field"><span class="field-label">Phone Number:</span>
+      <span class="value" th:text="${order.client?.PhoneNumber}"></span></div>
+  </section>
+
+  <section class="section">
+    <div class="section-title">1. Deceased Information</div>
+    <div class="field" th:each="name, iter : ${order.deceased}">
+      <span th:text="${iter.index + 1} + '.'">1.</span>
+      <span class="field-label">Full Name:</span>
+      <span class="value" th:text="${name}"></span>
+    </div>
+    <div class="field"><span class="field-label">Cemetery:</span>
+      <span class="value" th:text="${order.cemetery}"></span></div>
+  </section>
+
+  <section class="section">
+    <div class="section-title">2. Memorial Details</div>
+    <div class="field"><span class="field-label">Tombstone Catalogue ID:</span>
+      <span class="value" th:text="${order.tombstoneId}"></span></div>
+    <div class="field"><span class="field-label">Ceramic Photo ID:</span>
+      <span class="value" th:text="${order.ceramicPhotoId}"></span></div>
+  </section>
+
+  <section class="section">
+    <div class="section-title">3. Order Details</div>
+    <div class="row">
+      <div class="field"><span class="field-label">Order Date:</span>
+        <span class="value" th:text="${order.dateOfOrder != null} ? ${#dates.format(order.dateOfOrder, 'dd/MM/yyyy')} : ''"></span></div>
+      <div class="field"><span class="field-label">Deadline:</span>
+        <span class="value" th:text="${order.deadline != null} ? ${#dates.format(order.deadline, 'dd/MM/yyyy')} : ''"></span></div>
+    </div>
+    <div class="row">
+      <div class="field"><span class="field-label">Status:</span>
+        <span class="value" th:text="${order.status != null} ? ${order.status.displayName} : ''"></span></div>
+      <div class="field"><span class="field-label">Total Price:</span>
+        <span class="value" th:text="${order.totalPrice != null} ? ${#numbers.formatDecimal(order.totalPrice, 1, 'COMMA', 2, 'POINT')} + ' BGN' : ''"></span></div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="section-title">4. Additional Services</div>
+    <div class="field" th:each="s : ${order.additionalServices}">
+      <span class="field-label">Service:</span>
+      <span class="value" th:text="${s.name + ' - ' + s.price + ' BGN'}"></span>
+    </div>
+    <div class="field" th:if="${#lists.isEmpty(order.additionalServices)}">
+      <span class="value">None</span>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="section-title">5. Design</div>
+    <div class="design-row">
+      <div class="design-col">
+        <div id="design-stage" class="design-stage"></div>
+      </div>
+      <div class="signatures-col">
+        <div class="signature">Client Signature</div>
+        <div class="signature">Employee Signature</div>
+      </div>
+    </div>
+  </section>
+
+  <footer class="footer">STONELEGACY MEMORIALS · ORDER DOCUMENT</footer>
+</div>
+
+<script th:inline="javascript">
+    const raw = /*[[${order.design}]]*/ '';
+    const stage = document.getElementById('design-stage');
+    try {
+        JSON.parse(raw || '[]').forEach(d => {
+            const layer = document.createElement('div');
+            layer.className = 'd-layer';
+            layer.style.left = d.x + '%';
+            layer.style.top = d.y + '%';
+            layer.style.width = d.w + '%';
+            const img = document.createElement('img');
+            img.src = d.src;
+            layer.appendChild(img);
+            stage.appendChild(layer);
+        });
+    } catch (e) { /* no design saved */ }
+</script>
+</body>
+</html>

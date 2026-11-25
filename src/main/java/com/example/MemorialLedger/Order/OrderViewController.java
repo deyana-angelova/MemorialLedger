@@ -123,4 +123,10 @@ public class OrderViewController {
                 .map(UUID::fromString)
                 .toList();
     }
+    //preview readonly order
+    @GetMapping("/{id}/preview")
+    public String preview(@PathVariable("id") UUID id,Model model){
+        model.addAttribute("order", repo.findById(id).orElseThrow());
+        return "order/preview";
+    }
 }
