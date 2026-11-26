@@ -372,5 +372,15 @@ input:focus, select:focus, textarea:focus {
     border-radius: 9px;
 }
 
-
+.filters {
+    display: flex; flex-wrap: wrap; gap: 14px; align-items: flex-end;
+    padding: 16px 20px; margin-bottom: 18px;
+    background: #fff; border: 1px solid #e4e8ee; border-radius: 14px;
+}
+.filters label {
+    display: block; margin-bottom: 5px;
+    font-size: 11px; letter-spacing: 1px; text-transform: uppercase; color: #7a8696;
+}
+.filters input, .filters select { width: 180px; }
+.filter-actions { display: flex; gap: 8px; }
 

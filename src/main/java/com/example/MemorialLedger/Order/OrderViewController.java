@@ -1,13 +1,17 @@
 package com.example.MemorialLedger.Order;
 
 import com.example.MemorialLedger.SvgStorage;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Controller
 @RequestMapping("/orders")
@@ -28,8 +32,28 @@ public class OrderViewController {
 
     // get all
     @GetMapping
-    public String index(Model model) {
-        model.addAttribute("orders", repo.findAll());
+    public String index(@RequestParam(required = false) Status status,
+                        @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) Date from,
+                        @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) Date to,
+                        @RequestParam(required = false) String cemetery,
+                        Model model) {
+        List<Order> result = repo.findAll().stream()
+                        .filter(o -> status == null || o.getStatus() == status)
+                        .filter(o -> from == null
+                        || (o.getDateOfOrder() != null && !o.getDateOfOrder().before(from)))
+                        .filter(o -> to == null
+                        || (o.getDateOfOrder() != null && !o.getDateOfOrder().after(to)))
+                        .filter(o -> cemetery == null || cemetery.isBlank()
+                        || (o.getCemetery() != null
+                        && o.getCemetery().toLowerCase().contains(cemetery.trim().toLowerCase())))
+                        .collect(Collectors.toList());
+
+        model.addAttribute("orders", result);
+        model.addAttribute("statuses", Status.values());
+        model.addAttribute("fStatus", status);
+        model.addAttribute("fFrom", from);
+        model.addAttribute("fTo", to);
+        model.addAttribute("fCemetery", cemetery);
         return "order/orders";
     }
 

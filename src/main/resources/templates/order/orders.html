@@ -36,7 +36,38 @@
                     0 orders
                 </span>
             </div>
+            <form class="filters" method="get" th:action="@{/orders}">
+                <div>
+                    <label>Label</label>
+                    <select name="status">
+                        <option value="">All</option>
+                        <option th:each="s : ${statuses}"
+                                th:value="${s}"
+                                th:text="${s.displayName}"
+                                th:selected="${fStatus == s}"></option>
+                    </select>
+                </div>>
 
+                <div>
+                    <label>From</label>
+                    <input type="date" name="from"
+                            th:value="${fFrom != null} ? ${#dates.format(fFrom, 'yyyy-MM-dd')} : ''">
+                </div>
+                <div>
+                    <label>From</label>
+                    <input type="date" name="to"
+                           th:value="${fTo != null} ? ${#dates.format(fTo, 'yyyy-MM-dd')} : ''">
+                </div>
+                <div>
+                    <label>Cemetery</label>
+                    <input type="text" name="cemetery" placeholder="Search ..." th:value="${Cemetery}">
+                </div>
+                <div class="filter-actions">
+                    <button class="btn" type="submit">Filter</button>
+                    <a class="btn btn-light" th:href="@{/orders}">Clear</a>
+                </div>
+            </form>
+            <p class="muted" th:text="${#lists.size(orders)} + ' order(s) found'"></p>
             <div style="overflow-x: auto;">
                 <table>
                     <thead>
