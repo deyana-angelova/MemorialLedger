@@ -13,9 +13,26 @@
 
     <main class="content">
         <header class="topbar">
-            <h1>Clients</h1>
+            <h1 class="title-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                     stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <circle cx="12" cy="8" r="3.5"/>
+                    <path d="M5 20c0-3.9 3.1-6 7-6s7 2.1 7 6"/>
+                </svg>
+                Clients
+            </h1>
         </header>
+        <form class="filters" method="get" th:action="@{/clients}">
+            <div>
+                <label>Client name</label>
+                <input type="text" name="name" placeholder="Search ..." th:value="${fName}">
+            </div>
 
+            <div class="filter-actions">
+                <button class="btn" type="submit">Filter</button>
+                <a class="btn btn-light" th:href="@{/clients}">Clear</a>
+            </div>
+        </form>
         <div class="card">
             <table>
                 <thead>

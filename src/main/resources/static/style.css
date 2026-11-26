@@ -384,3 +384,12 @@ input:focus, select:focus, textarea:focus {
 .filters input, .filters select { width: 180px; }
 .filter-actions { display: flex; gap: 8px; }
 
+
+.title-icon { display: flex; align-items: center; gap: 12px; }
+.title-icon svg {
+    width: 40px; height: 40px; flex: none;
+    padding: 8px;
+    color: #4a6a87;
+    background: #e6edf5;
+    border-radius: 12px;
+}

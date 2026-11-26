@@ -3,7 +3,7 @@
 <html xmlns:th="http://www.thymeleaf.org" lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Orders | StoneLegacy</title>
+    <title>Orders | Memorial Ledger</title>
     <link rel="stylesheet" th:href="@{/style.css}">
 </head>
 <body>
@@ -15,7 +15,15 @@
 
         <header class="topbar">
             <div>
-                <h1>Orders</h1>
+                <h1 class="title-icon">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                         stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                        <path d="M7 3h7l4 4v14H7z"/>
+                        <path d="M14 3v4h4"/>
+                        <path d="M10 12h5M10 15.5h5"/>
+                    </svg>
+                    Orders
+                </h1>
                 <p style="color: #777; margin-top: 5px;">
                     Manage memorial orders and track their progress.
                 </p>
@@ -46,7 +54,7 @@
                                 th:text="${s.displayName}"
                                 th:selected="${fStatus == s}"></option>
                     </select>
-                </div>>
+                </div>
 
                 <div>
                     <label>From</label>
@@ -54,7 +62,7 @@
                             th:value="${fFrom != null} ? ${#dates.format(fFrom, 'yyyy-MM-dd')} : ''">
                 </div>
                 <div>
-                    <label>From</label>
+                    <label>To</label>
                     <input type="date" name="to"
                            th:value="${fTo != null} ? ${#dates.format(fTo, 'yyyy-MM-dd')} : ''">
                 </div>
